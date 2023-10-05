@@ -3,8 +3,18 @@ const bodyParser = require("body-parser");
 const app = express();
 const nodemailer = require("nodemailer");
 const MongoClient = require('mongodb').MongoClient;
+const dotenv = require('dotenv');
 
-const url = "mongodb+srv://christianjarrouj24:YK578_23@cluster0.mk5r7qf.mongodb.net/";
+dotenv.config();
+
+const dbUser = process.env.DB_USER;
+const dbPass = process.env.DB_PASSWORD;
+const smtpUser = process.env.SMTP_USER;
+const smtpPass = process.env.SMTP_PASS;
+
+const jsonData = require('./config.json');
+
+const url = `mongodb+srv://${dbUser}:${dbPass}@cluster0.mk5r7qf.mongodb.net/`;
 const dbName = "needles";
 const client = new MongoClient(url);
 
@@ -13,8 +23,8 @@ const transporter = nodemailer.createTransport({
   port: 587, // This is the default SMTP port for Outlook
   secure: false, // Use TLS for secure connection
   auth: {
-    user: 'chrisjarrouj@outlook.com', // Your Outlook email address
-    pass: 'YK578_23' // Your Outlook email password
+    user: smtpUser, // Your Outlook email address
+    pass: smtpPass // Your Outlook email password
   }
 });
 
@@ -25,15 +35,6 @@ app.use(bodyParser.json());
 async function dbConnect() {
   try {
     await client.connect();
-    const info = await transporter.sendMail({
-      from: 'chrisjarrouj@outlook.com', // sender address
-      to: "christianjarrouj24@gmail.com", // list of receivers
-      subject: "Hello ✔", // Subject line
-      text: "Hello world?", // plain text body
-      html: "<b>Hello world?</b>", // html body
-    });
-  
-    console.log("Message sent: %s", info.messageId);
   } catch (error) {       
     return error;
   }
@@ -48,8 +49,6 @@ app.get("/needlesConfig", (req, res) => {
       res.status(500).json({ error: "Database connection error" });
       return;
     }
-
-    console.log("Connected to MongoDB successfully");
 
     const db = client.db(dbName);
     const collection = db.collection("needlesConfig");
@@ -74,8 +73,6 @@ app.get("/needles", (req, res) => {
       res.status(500).json({ error: "Database connection error" });
       return;
     }
-
-    console.log("Connected to MongoDB successfully");
 
     const db = client.db(dbName);
     const collection = db.collection("needles");
@@ -105,8 +102,6 @@ app.get("/needles/:name", (req, res) => {
       res.status(500).json({ error: "Database connection error" });
       return;
     }
-
-    console.log("Connected to MongoDB successfully");
 
     const db = client.db(dbName);
     const collection = db.collection("needles");
@@ -183,10 +178,14 @@ app.post("/needles", (req, res) => {
   });
 });
 
-app.post("/needlesStatus", (req, res) => {
+app.post("/needlesStatus", async (req, res) => {
   const { name, longitude, latitude, temperature, moisture } = req.body;
 
-  const responseBuilder = { name, temperature, moisture };
+  const responseBuilder = { name, temperature, moisture, longitude, latitude };
+
+  if (temperature > jsonData.maxTemperature || moisture < jsonData.minMoisture) {
+    await sendEmail(transporter, {name, temperature, moisture});
+  }
 
   dbConnect().then((err) => {
     if (err) {
@@ -194,8 +193,6 @@ app.post("/needlesStatus", (req, res) => {
       res.status(500).json({ error: "Database connection error" });
       return;
     }
-
-    console.log("Connected to MongoDB successfully");
 
     const db = client.db(dbName);
     const collection = db.collection("needlesStatus");
@@ -224,6 +221,17 @@ app.post("/needlesStatus", (req, res) => {
       });
   });
 });
+
+const sendEmail = async (transporter, data) => {
+  const mail =  {
+      from: 'chrisjarrouj@outlook.com', 
+      to: "christianjarrouj24@gmail.com",
+      subject: "Neddle status warning",
+      text: `Needle ${data?.name} temperature is ${data?.temperature} and the moisture is ${data?.moisture} found under this link https://www.google.com/maps?q=${data?.latitude},${data?.longitude}`,
+      html: `<b>Needle ${data?.name} temperature is ${data?.temperature} and the moisture is ${data?.moisture} found under this link https://www.google.com/maps?q=${data?.latitude},${data?.longitude}</b>`
+    }
+    await transporter.sendMail(mail);
+}
 
 app.listen(port, () => {
   console.log(`Listen on port ${port}`);
