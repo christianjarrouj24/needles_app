@@ -1,0 +1,168 @@
+{
+	"info": {
+		"_postman_id": "726ccfb2-b2b9-4453-9eaa-c6b58553adec",
+		"name": "Needles App",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30168507"
+	},
+	"item": [
+		{
+			"name": "GetConfig",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/needlesConfig",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"needlesConfig"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllNeedles",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/needles",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"needles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetSpecificNeedleDetails",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"needle1\", \"longitude\": 29.1, \"latitude\": 41.2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/needles/needle1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"needles",
+						"needle1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetSpecificNeedleStatusDetails",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"needle1\", \"longitude\": 29.1, \"latitude\": 41.2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/needlesStatus/needle1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"needlesStatus",
+						"needle1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PostNeedleStatus",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"needle1\",\n    \"longitude\": 20,\n    \"latitude\": 20,\n    \"temperature\": 20,\n    \"moisture\": 20\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/needlesStatus",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"needlesStatus"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PostNeedle",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"needle1\", \"longitude\": 30, \"latitude\": 30\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/needles",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"needles"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
