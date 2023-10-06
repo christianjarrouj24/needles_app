@@ -14,7 +14,7 @@ const smtpPass = process.env.SMTP_PASS;
 
 const jsonData = require('./config.json');
 
-const url = `mongodb+srv://${dbUser}:${dbPass}@cluster0.mk5r7qf.mongodb.net/`;
+const url = `mongodb+srv://${dbUser}:${dbPass}@cluster0.uclnjxz.mongodb.net/`;
 const dbName = "needles";
 const client = new MongoClient(url);
 
@@ -224,7 +224,7 @@ app.post("/needlesStatus", async (req, res) => {
 
 const sendEmail = async (transporter, data) => {
   const mail =  {
-      from: 'chrisjarrouj@outlook.com', 
+      from: 'needles1993@outlook.com', 
       to: "christianjarrouj24@gmail.com",
       subject: "Neddle status warning",
       text: `Needle ${data?.name} temperature is ${data?.temperature} and the moisture is ${data?.moisture} found under this link https://www.google.com/maps?q=${data?.latitude},${data?.longitude}`,
